@@ -21,7 +21,7 @@ type Message struct {
 
 func (c *Client) writeMessage() {
 	defer func() {
-		c.Conn.close()
+		c.Conn.Close()
 	}()
 
 	for {
@@ -36,7 +36,7 @@ func (c *Client) writeMessage() {
 
 func (c *Client) readMessage(hub *Hub) {
 	defer func() {
-		c.Conn.close()
+		c.Conn.Close()
 	}()
 
 	for {
@@ -53,5 +53,7 @@ func (c *Client) readMessage(hub *Hub) {
 			RoomID:   c.RoomID,
 			Username: c.Username,
 		}
+
+		hub.Broadcast <- msg
 	}
 }

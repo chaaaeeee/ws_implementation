@@ -58,7 +58,7 @@ func (h *Handler) JoinRoom(c *gin.Context) {
 	username := c.Query("username")
 
 	// store it into client struct
-	cl := Client{
+	cl := &Client{
 		Conn:     conn,
 		Message:  make(chan *Message, 10), // this a homework
 		ID:       userID,
@@ -67,7 +67,7 @@ func (h *Handler) JoinRoom(c *gin.Context) {
 	}
 
 	// make a message struct
-	msg := Message{
+	msg := &Message{
 		Content:  "A user has joined the room!",
 		RoomID:   roomID,
 		Username: username,
@@ -79,5 +79,12 @@ func (h *Handler) JoinRoom(c *gin.Context) {
 	h.hub.Broadcast <- msg
 
 	// writeMessage()
+
 	// readMessage()
+	go cl.writeMessage()
+	cl.readMessage(h.hub)
+}
+
+func (h *Handler) GetRooms(c *gin.Context) {
+	c.JSON(http.StatusOK, h.hub.Rooms)
 }
